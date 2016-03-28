@@ -107,13 +107,84 @@ mbp13:data stephane$ grep "Chicken Burrito" chipotle.tsv | grep "Pinto Beans" | 
 
     ```
 1. Optional: Use the the command line to discover something "interesting" about the Chipotle data. Try using the commands from the "advanced" section!
-    Verify the order count:
+    1. **Verify the order count:**
 
-    ```
-    mbp13:data stephane$ cut -f1 chipotle.tsv | sort | uniq | wc -l
-    1835
-    ```
+        ```
+        mbp13:data stephane$ cut -f1 chipotle.tsv | sort | uniq | wc -l
+        1835
+        ```
+        
+        Yes, 1834 unique order_ids, +1 for the column names. Try to discard the column names to get the exact count without them
+        
+        2 ways using sed (both lines output 1834).
+        
+        - ```sed -n '2,$ p' chipotle.tsv | cut -f1 | sort | uniq | wc -l```
+        - ```sed '1d' chipotle.tsv | cut -f1 | sort | uniq | wc -l```
     
-    Yes, 1834 unique order_ids, +1 for the column names.
+    1. **average items per order:**
     
+        ```
+        mbp13:data stephane$ sed '1d' chipotle.tsv | cut -f1 | sort | uniq -c | awk '{s+=$1}END{print "total items: ",s,"\naverage items per order: ",  s/NR}'
+        total items:  4622 
+        average items per order:  2.52017
+        ```
+    1. **Top 10 orders, by number of items**
+        
+        1st column - # of items; 2nd column - order number
+        ```
+        mbp13:data stephane$ sed '1d' chipotle.tsv | cut -f1 | sort -g | uniq -c | sort -gr | head
+          23 926
+          14 1483
+          12 205
+          11 759
+          11 691
+          11 1786
+          10 491
+           9 561
+           9 1660
+           8 953
+        ```
+
+        Let's verify that, by trying to find all items for order #953:
+        
+        ```
+        mbp13:data stephane$ awk '{if ($1 == 953) print $0}' chipotle.tsv 
+        953	1	Barbacoa Burrito	[Fresh Tomato Salsa, [Rice, Pinto Beans, Cheese, Lettuce]]	$9.25 
+        953	1	Barbacoa Bowl	[Roasted Chili Corn Salsa, [Cheese, Lettuce]]	$9.25 
+        953	1	Barbacoa Burrito	[Roasted Chili Corn Salsa, [Fajita Vegetables, Rice, Cheese, Sour Cream, Lettuce]]	$9.25 
+        953	1	Steak Salad Bowl	[Fresh Tomato Salsa, [Fajita Vegetables, Guacamole]]	$11.89 
+        953	1	Steak Bowl	[Fresh Tomato Salsa, [Fajita Vegetables, Rice, Guacamole]]	$11.75 
+        953	1	Chicken Salad Bowl	[Fresh Tomato Salsa, [Fajita Vegetables, Rice, Pinto Beans, Cheese, Guacamole]]	$11.25 
+        953	1	Carnitas Bowl	[Fresh Tomato Salsa, [Fajita Vegetables, Rice, Black Beans, Cheese, Sour Cream]]	$9.25 
+        953	1	Steak Burrito	[Tomatillo Red Chili Salsa, [Rice, Lettuce]]	$9.25 
+        ```
+        
+        Okay, looks good.
+        
+    1. **How about frequency distribution of order sizes?**
     
+        First column: # of items in order
+        
+        Second column: # How many orders with that many items
+        
+        ```
+        mbp13:data stephane$ sed '1d' chipotle.tsv | cut -f1 | sort -g | uniq -c | sort -g | awk '{print $1}' | uniq -c | awk '{print $2 " " $1}'
+        1 128
+        2 1012
+        3 484
+        4 134
+        5 44
+        6 14
+        7 4
+        8 5
+        9 2
+        10 1
+        11 3
+        12 1
+        14 1
+        23 1
+        ```
+        
+    .
+    
+        
