@@ -1,6 +1,6 @@
 # HW due 3/28
 
-Command Line Tasks
+##Command Line Tasks
 
 1. Look at the head and the tail of chipotle.tsv in the data subdirectory of this repo. Think for a minute about how the data is structured. What do you think each column means? What do you think each row means? Tell me! (If you're unsure, look at more of the file contents.)
     
@@ -100,4 +100,10 @@ mbp13:data stephane$ grep "Chicken Burrito" chipotle.tsv | grep "Pinto Beans" | 
     ```
 
 1. Count the approximate number of occurrences of the word "dictionary" (regardless of case) across all files in the GA-SEA-DAT1 repo.
+    **87?**
+    ```
+    mbp13:repos stephane$ grep -hroi dictionary GA-SEA-DAT2 | wc -l
+      87
+
+    ```
 1. Optional: Use the the command line to discover something "interesting" about the Chipotle data. Try using the commands from the "advanced" section!
