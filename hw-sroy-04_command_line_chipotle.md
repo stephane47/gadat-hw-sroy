@@ -107,3 +107,13 @@ mbp13:data stephane$ grep "Chicken Burrito" chipotle.tsv | grep "Pinto Beans" | 
 
     ```
 1. Optional: Use the the command line to discover something "interesting" about the Chipotle data. Try using the commands from the "advanced" section!
+    Verify the order count:
+
+    ```
+    mbp13:data stephane$ cut -f1 chipotle.tsv | sort | uniq | wc -l
+    1835
+    ```
+    
+    Yes, 1834 unique order_ids, +1 for the column names.
+    
+    
